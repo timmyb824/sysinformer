@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/timmyb824/sysinformer/sysinform"
+	"github.com/timmyb824/sysinformer/sysinformer"
 	"github.com/urfave/cli/v2"
 )
 
@@ -43,35 +43,35 @@ func main() {
 			}
 
 			if showAll || showSystem {
-				sysinform.PrintSystemInfo()
+				sysinformer.PrintSystemInfo()
 			}
 
 			if showAll || showCPU {
-				sysinform.PrintCPUInfo()
+				sysinformer.PrintCPUInfo()
 			}
 
 			if showAll || showMemory {
-				sysinform.PrintMemoryInfo()
+				sysinformer.PrintMemoryInfo()
 			}
 
 			if showAll || showDisks {
-				sysinform.PrintDiskInfo()
+				sysinformer.PrintDiskInfo()
 			}
 
 			if showAll || showNetwork {
-				sysinform.PrintNetworkInfo()
+				sysinformer.PrintNetworkInfo()
 			}
 
 			if showAll || showLatency {
-				sysinform.PrintLatencyInfo()
+				sysinformer.PrintLatencyInfo()
 			}
 
 			if showAll || showServices {
-				sysinform.PrintServicesInfo()
+				sysinformer.PrintServicesInfo()
 			}
 
 			if showAll || showContainers {
-				sysinform.PrintContainerInfo()
+				sysinformer.PrintContainerInfo()
 			}
 			return nil
 		},
