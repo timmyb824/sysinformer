@@ -8,8 +8,11 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+var Version = "dev"
+
 func main() {
 	app := &cli.App{
+		Version: Version,
 		Name:  "sysinformer",
 		Usage: "Show system info",
 		Flags: []cli.Flag{
@@ -19,8 +22,8 @@ func main() {
 			&cli.BoolFlag{Name: "disks", Aliases: []string{"d"}, Usage: "Show disk information"},
 			&cli.BoolFlag{Name: "network", Aliases: []string{"n"}, Usage: "Show network information"},
 			&cli.BoolFlag{Name: "latency", Aliases: []string{"l"}, Usage: "Show latency information"},
-			&cli.BoolFlag{Name: "services", Aliases: []string{"v"}, Usage: "Show services information"},
-			&cli.BoolFlag{Name: "containers", Aliases: []string{"k"}, Usage: "Show container information"},
+			&cli.BoolFlag{Name: "services", Aliases: []string{"S"}, Usage: "Show services information"},
+			&cli.BoolFlag{Name: "containers", Aliases: []string{"C"}, Usage: "Show container information"},
 			&cli.BoolFlag{Name: "all", Aliases: []string{"a"}, Usage: "Show all information"},
 		},
 		Action: func(c *cli.Context) error {
