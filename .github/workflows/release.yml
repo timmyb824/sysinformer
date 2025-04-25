@@ -29,10 +29,10 @@ jobs:
       - name: Build binary
         run: |
           VERSION=${GITHUB_REF##*/}
-          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags "-X main.Version=$VERSION" -o sysinfo-${{ matrix.goos }}-${{ matrix.goarch }}
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags "-X main.Version=$VERSION" -o sysinformer-${{ matrix.goos }}-${{ matrix.goarch }}
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
-          files: sysinfo-*
+          files: sysinformer-*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
