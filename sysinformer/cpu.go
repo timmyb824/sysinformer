@@ -140,7 +140,7 @@ func PrintCPUInfo() {
 		return
 	}
 
-	fmt.Println("===== CPU Information =====")
+	PrintSectionHeader("===== CPU Information =====")
 	headers := []string{"Model", "Cores", "Speed", "Usage"}
 	var data [][]string
 	data = append(data, []string{fmt.Sprintf("%v", cpuInfo["cpu_model"]), fmt.Sprintf("%v", cpuInfo["cpu_count"]), fmt.Sprintf("%.2f", cpuInfo["cpu_freq"]), fmt.Sprintf("%.1f%%", cpuInfo["cpu_usage"])})

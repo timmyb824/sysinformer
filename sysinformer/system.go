@@ -44,7 +44,7 @@ func PrintSystemInfo() {
 		fmt.Println("Error getting system info:", err)
 		return
 	}
-	fmt.Println("===== System Information =====")
+	PrintSectionHeader("===== System Information =====")
 	fmt.Printf("Hostname: %v\n", systemInfo["hostname"])
 	fmt.Printf("OS: %v %v %v\n", systemInfo["os_type"], systemInfo["dist"], systemInfo["dist_version"])
 	fmt.Printf("Kernel: %v\n", systemInfo["kernel_info"])

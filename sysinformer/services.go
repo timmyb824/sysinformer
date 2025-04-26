@@ -38,7 +38,7 @@ func PrintServicesInfo() {
 	fmt.Println("") // Add space before section
 	// headers and data preparation logic remains
 
-	fmt.Println("===== Services Information =====")
+	PrintSectionHeader("===== Services Information =====")
 	headers := []string{"Service Name", "Port", "Status"}
 	var data [][]string
 	for _, service := range commonServices {

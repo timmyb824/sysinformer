@@ -105,7 +105,7 @@ func PrintContainerInfo() {
 	fmt.Println("") // Add space before section
 	// headers and data preparation logic remains
 
-	fmt.Println("===== Container Information =====")
+	PrintSectionHeader("===== Container Information =====")
 	containers, err := getContainers()
 	if err != nil {
 		fmt.Printf("Warning: %v\n", err)

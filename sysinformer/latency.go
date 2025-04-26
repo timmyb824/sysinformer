@@ -122,7 +122,7 @@ func PrintLatencyInfo() {
 	fmt.Println("") // Add space before section
 	// headers and data preparation logic remains
 
-	fmt.Println("===== Latency Information =====")
+	PrintSectionHeader("===== Latency Information =====")
 
 	// Perform ping tests concurrently
 	pingResults := performPing(hosts)

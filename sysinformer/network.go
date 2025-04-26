@@ -126,7 +126,7 @@ func getNetworkActivity() (map[string]map[string]float64, error) {
 func PrintNetworkInfo() {
 	fmt.Println("") // Add space before section
 
-	fmt.Println("===== Network Information =====")
+	PrintSectionHeader("===== Network Information =====")
 	ipLan, ipWan, err := getNetworkInfo()
 	if err != nil {
 		fmt.Println("Error getting network info:", err)

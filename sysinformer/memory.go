@@ -180,7 +180,7 @@ func PrintMemoryInfo() {
 		return
 	}
 
-	fmt.Println("===== Memory Information =====")
+	PrintSectionHeader("===== Memory Information =====")
 	headers := []string{"Type", "Free", "Total", "Usage %"}
 	memRow := []string{"Mem", memInfo["mem_free"].(string), memInfo["mem_total"].(string), fmt.Sprintf("%.2f", memInfo["mem_usage"].(float64))}
 	swapRow := []string{"Swap", memInfo["swap_free"].(string), memInfo["swap_total"].(string), fmt.Sprintf("%.2f", memInfo["swap_usage"].(float64))}

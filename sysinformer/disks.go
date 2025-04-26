@@ -54,7 +54,7 @@ func PrintDiskInfo() {
 		return
 	}
 
-	fmt.Println("===== Disk Information =====")
+	PrintSectionHeader("===== Disk Information =====")
 	headers := []string{"Device", "Mountpoint", "Total", "Used", "Free", "Percentage"}
 	var data [][]string
 	for _, info := range diskInfo {
