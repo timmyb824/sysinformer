@@ -120,20 +120,13 @@ func PrintContainerInfo() {
 	// Print runtime information
 	fmt.Printf("%s containers running on your system:\n", strings.Title(containers[0].Platform))
 
-	// Print table header
-	fmt.Println("┌───────────┬───────────┬───────────┬───────────┐")
-	fmt.Println("│ ID         │ Name       │ Ports      │ Status     │")
-	fmt.Println("├───────────┼───────────┼───────────┼───────────┤")
-
-	// Print table rows
-	for i, container := range containers {
-		// Truncate ID to first 12 characters
+	headers := []string{"ID", "Name", "Ports", "Status"}
+	var data [][]string
+	for _, container := range containers {
 		id := container.ID
 		if len(id) > 12 {
 			id = id[:12]
 		}
-
-		// Extract status duration
 		status := container.Status
 		if strings.HasPrefix(status, "Up") {
 			parts := strings.Fields(status)
@@ -141,19 +134,16 @@ func PrintContainerInfo() {
 				status = strings.Join(parts[1:], " ")
 			}
 		}
-
-		fmt.Printf("│ %-10s │ %-10s │ %-10s │ %-10s │\n",
+		row := []string{
 			id,
 			truncate(container.Name, 10),
 			truncate(container.Ports, 10),
-			truncate(status, 10))
-
-		if i < len(containers)-1 {
-			fmt.Println("├───────────┼───────────┼───────────┼───────────┤")
+			truncate(status, 10),
 		}
+		data = append(data, row)
 	}
+	RenderTable(headers, data)
 
-	fmt.Println("└───────────┴───────────┴───────────┴───────────┘")
 }
 
 func truncate(s string, n int) string {

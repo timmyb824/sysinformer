@@ -51,5 +51,5 @@ func PrintServicesInfo() {
 	}
 	RenderTable(headers, data)
 
-	fmt.Println("└──────────────┴──────────┴──────────┘")
+
 }
