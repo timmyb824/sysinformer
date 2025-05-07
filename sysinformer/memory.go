@@ -133,14 +133,22 @@ func getMemoryInfo() (map[string]interface{}, error) {
 			})
 		}
 
+		// Filter out 'sysinformer' or 'sysinfo' process
+		var filteredProcs []procInfo
+		for _, proc := range procs {
+			if proc.name != "sysinformer" && proc.name != "sysinfo" {
+				filteredProcs = append(filteredProcs, proc)
+			}
+		}
+
 		// Sort by memory usage
-		sort.Slice(procs, func(i, j int) bool {
-			return procs[i].memoryPercent > procs[j].memoryPercent
+		sort.Slice(filteredProcs, func(i, j int) bool {
+			return filteredProcs[i].memoryPercent > filteredProcs[j].memoryPercent
 		})
 
-		// Get top 5 processes
-		if len(procs) > 5 {
-			procs = procs[:5]
+		// Get top 5 processes (excluding sysinformer)
+		if len(filteredProcs) > 5 {
+			filteredProcs = filteredProcs[:5]
 		}
 
 		return map[string]interface{}{
@@ -153,7 +161,7 @@ func getMemoryInfo() (map[string]interface{}, error) {
 			"swap_usage":              swapMemory.UsedPercent,
 			"swap_used_percentage_calc": swapUsedPercentageCalc,
 			"warning":                  warning,
-			"top_processes":            procs,
+			"top_processes":            filteredProcs,
 		}, nil
 	}
 
