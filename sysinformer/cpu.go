@@ -106,13 +106,21 @@ func getCPUInfo() (map[string]interface{}, error) {
 			})
 		}
 
+		// Filter out 'sysinformer' or 'sysinfo' process
+		var filteredProcs []procInfo
+		for _, proc := range procs {
+			if proc.name != "sysinformer" && proc.name != "sysinfo" {
+				filteredProcs = append(filteredProcs, proc)
+			}
+		}
+
 		// Sort by CPU usage
-		sort.Slice(procs, func(i, j int) bool {
-			return procs[i].cpuPercent > procs[j].cpuPercent
+		sort.Slice(filteredProcs, func(i, j int) bool {
+			return filteredProcs[i].cpuPercent > filteredProcs[j].cpuPercent
 		})
 
-		// Get top 5 processes
-		top5 := procs
+		// Get top 5 processes (excluding sysinformer)
+		top5 := filteredProcs
 		if len(top5) > 5 {
 			top5 = top5[:5]
 		}
