@@ -23,12 +23,24 @@ func getSystemInfo() (map[string]interface{}, error) {
 		usersNb = len(users)
 	}
 
+	var dist string
+	switch runtime.GOOS {
+	case "darwin":
+		dist = "macOS"
+	case "linux":
+		dist = hostInfo.Platform
+	case "windows":
+		dist = "Windows"
+	default:
+		dist = hostInfo.Platform
+	}
+
 	systemInfo := map[string]interface{}{
 		"os_type":      cases.Title(language.English).String(runtime.GOOS),
 		"hostname":     hostInfo.Hostname,
 		"kernel_info":  hostInfo.KernelVersion,
 		"architecture": runtime.GOARCH,
-		"dist":         "macOS",
+		"dist":         dist,
 		"dist_version": hostInfo.PlatformVersion,
 		"uptime":       fmt.Sprintf("%d days, %d hours, %d minutes", hostInfo.Uptime/86400, (hostInfo.Uptime%86400)/3600, (hostInfo.Uptime%3600)/60),
 		"last_boot_date": time.Unix(int64(hostInfo.BootTime), 0).Format("2006-01-02 15:04:05"),
