@@ -189,9 +189,22 @@ func PrintMemoryInfo() {
 	}
 
 	PrintSectionHeader("===== Memory Information =====")
-	headers := []string{"Type", "Free", "Total", "Usage %"}
-	memRow := []string{"Mem", memInfo["mem_free"].(string), memInfo["mem_total"].(string), fmt.Sprintf("%.2f", memInfo["mem_usage"].(float64))}
-	swapRow := []string{"Swap", memInfo["swap_free"].(string), memInfo["swap_total"].(string), fmt.Sprintf("%.2f", memInfo["swap_usage"].(float64))}
+fmt.Println("Note: 'Actual Usage %' is calculated as (1 - Available/Total) and matches htop-style memory usage (excludes cache/buffers reclaimed by the OS).")
+	headers := []string{"Type", "Free", "Total", "Usage %", "Actual Usage %"}
+	memRow := []string{
+		"Mem",
+		memInfo["mem_free"].(string),
+		memInfo["mem_total"].(string),
+		fmt.Sprintf("%.2f", memInfo["mem_usage"].(float64)), // Traditional usage (includes buffers/cache)
+		fmt.Sprintf("%.2f", memInfo["mem_used_percentage_calc"].(float64)), // htop-style usage (Available)
+	}
+	swapRow := []string{
+		"Swap",
+		memInfo["swap_free"].(string),
+		memInfo["swap_total"].(string),
+		fmt.Sprintf("%.2f", memInfo["swap_usage"].(float64)),
+		fmt.Sprintf("%.2f", memInfo["swap_used_percentage_calc"].(float64)),
+	}
 	RenderTable(headers, [][]string{memRow, swapRow})
 
 	// Print top processes in pretty table format
