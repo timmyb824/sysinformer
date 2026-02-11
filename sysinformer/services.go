@@ -51,5 +51,4 @@ func PrintServicesInfo() {
 	}
 	RenderTable(headers, data)
 
-
 }
