@@ -89,7 +89,7 @@ func RunWebDiagnostics(opts WebDiagOptions) error {
 	if opts.HTTP || runAll {
 		CheckHTTPStatusAndHeaders(nURL, time.Duration(opts.TimeoutSec)*time.Second)
 	}
-	if opts.SSL || (runAll && strings.HasPrefix(nURL, "https://")) {
+	if opts.SSL || runAll {
 		CheckSSL(domain, time.Duration(opts.TimeoutSec)*time.Second)
 	}
 	if opts.Whois || runAll {
