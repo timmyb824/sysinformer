@@ -116,9 +116,16 @@ func PingWebsite(domain string, count int, timeout time.Duration) {
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "ping", pingParam, fmt.Sprintf("%d", count), domain)
 	out, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Printf("Ping failed: %v\n", err)
+	// If the context timed out or was canceled, report and return.
+	if ctx.Err() != nil {
+		fmt.Printf("Ping canceled or timed out: %v\n", ctx.Err())
 		return
+	}
+	// Some ping implementations return a non-zero exit code even when providing
+	// useful output (for example, when there is packet loss). In that case,
+	// continue parsing the output but still surface the error.
+	if err != nil {
+		fmt.Printf("Ping reported error (continuing to parse output): %v\n", err)
 	}
 	text := string(out)
 
