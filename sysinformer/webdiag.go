@@ -399,6 +399,11 @@ func CheckWhois(domain string, timeout time.Duration) {
 	fmt.Println("")
 	PrintSectionHeader("WHOIS")
 
+	if _, err := exec.LookPath("whois"); err != nil {
+		fmt.Println("whois not found on PATH. Install it (e.g. 'brew install whois' on macOS, 'apt install whois' on Linux) or omit --whois.")
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 
