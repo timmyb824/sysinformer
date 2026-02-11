@@ -30,7 +30,7 @@ type WebDiagOptions struct {
 	Count      int
 }
 
-func ValidateTarget(raw string) (normalizedURL string, domain string, err error) {
+func ValidateTarget(ctx context.Context, raw string) (normalizedURL string, domain string, err error) {
 	if raw == "" {
 		return "", "", errors.New("empty target")
 	}
@@ -59,7 +59,7 @@ func ValidateTarget(raw string) (normalizedURL string, domain string, err error)
 	}
 
 	// Resolve to ensure it exists
-	if _, err := net.DefaultResolver.LookupHost(context.Background(), host); err != nil {
+	if _, err := net.DefaultResolver.LookupHost(ctx, host); err != nil {
 		return "", "", err
 	}
 	return u.String(), host, nil
@@ -73,7 +73,10 @@ func RunWebDiagnostics(opts WebDiagOptions) error {
 		opts.Count = 4
 	}
 
-	nURL, domain, err := ValidateTarget(opts.Target)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(opts.TimeoutSec)*time.Second)
+	defer cancel()
+
+	nURL, domain, err := ValidateTarget(ctx, opts.Target)
 	if err != nil {
 		return err
 	}
