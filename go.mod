@@ -6,6 +6,7 @@ require (
 	github.com/olekukonko/tablewriter v0.0.5
 	github.com/shirou/gopsutil/v3 v3.24.5
 	github.com/urfave/cli/v2 v2.27.6
+	golang.org/x/term v0.20.0
 	golang.org/x/text v0.24.0
 )
 
