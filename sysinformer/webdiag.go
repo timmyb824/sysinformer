@@ -46,14 +46,8 @@ func ValidateTarget(raw string) (normalizedURL string, domain string, err error)
 	if u.Host == "" {
 		return "", "", fmt.Errorf("invalid url: %q", raw)
 	}
-	// Strip port if present
-	host := u.Host
-	if strings.Contains(host, ":") {
-		h, _, splitErr := net.SplitHostPort(host)
-		if splitErr == nil {
-			host = h
-		}
-	}
+	// Extract hostname without port (handles IPv4, IPv6, and hostnames)
+	host := u.Hostname()
 	if host == "" {
 		return "", "", fmt.Errorf("invalid host: %q", raw)
 	}
