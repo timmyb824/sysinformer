@@ -9,7 +9,7 @@ import (
 	"golang.org/x/term"
 )
 
-// PrintSectionHeader prints a section heading in green for better visibility in CLI output
+// PrintSectionHeader prints a section heading in cyan with bold styling for better visibility in CLI output
 func PrintSectionHeader(header string) {
 	cyan := "\033[36m"
 	bold := "\033[1m"
