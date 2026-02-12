@@ -12,6 +12,7 @@ import (
 	"os/exec"
 	"runtime"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -343,7 +344,8 @@ func TraceRoute(domain string, timeout time.Duration) {
 
 	cmdName := "traceroute"
 	args := []string{domain}
-	if runtime.GOOS == "windows" {
+	isWindows := runtime.GOOS == "windows"
+	if isWindows {
 		cmdName = "tracert"
 		args = []string{domain}
 	}
@@ -376,7 +378,151 @@ func TraceRoute(domain string, timeout time.Duration) {
 		fmt.Println("No traceroute output")
 		return
 	}
-	fmt.Println(text)
+
+	rows := parseTraceOutput(text, isWindows)
+	if len(rows) == 0 {
+		fmt.Println(text)
+		return
+	}
+	RenderTable([]string{"Hop", "IP", "Hostname", "Time"}, rows)
+}
+
+func parseTraceOutput(text string, isWindows bool) [][]string {
+	lines := strings.Split(text, "\n")
+	rows := [][]string{}
+	for _, line := range lines {
+		l := strings.TrimSpace(line)
+		if l == "" {
+			continue
+		}
+
+		// Skip common headers
+		lower := strings.ToLower(l)
+		if strings.HasPrefix(lower, "traceroute") || strings.HasPrefix(lower, "tracing route") || strings.HasPrefix(lower, "over a maximum") {
+			continue
+		}
+		if strings.HasPrefix(lower, "hop") {
+			continue
+		}
+
+		fields := strings.Fields(l)
+		if len(fields) < 2 {
+			continue
+		}
+
+		// First field must be hop number
+		hop := strings.Trim(fields[0], ".")
+		if _, err := strconv.Atoi(hop); err != nil {
+			// Windows output may indent hop number
+			if isWindows {
+				if _, err2 := strconv.Atoi(strings.TrimLeft(hop, " ")); err2 != nil {
+					continue
+				}
+			} else {
+				continue
+			}
+		}
+
+		ip := ""
+		hostname := ""
+		times := []string{}
+		timedOut := false
+
+		for _, f := range fields[1:] {
+			if f == "*" {
+				timedOut = true
+				continue
+			}
+
+			clean := stripDelims(f)
+			if isIPLike(clean) {
+				if ip == "" {
+					ip = clean
+				}
+				continue
+			}
+
+			// Windows time tokens are often like "<1" followed by "ms".
+			if strings.HasSuffix(clean, "ms") {
+				times = append(times, clean)
+				continue
+			}
+			if isWindows {
+				// Capture "<1" or "12" if followed by ms later; we handle by collecting and joining
+				// only when we see the subsequent "ms" token. If this token is "ms", skip.
+				if clean == "ms" {
+					continue
+				}
+			}
+
+			if hostname == "" && clean != "ms" {
+				hostname = clean
+			}
+		}
+
+		if timedOut && ip == "" {
+			ip = "*"
+		}
+		if hostname == "" {
+			if ip != "" {
+				hostname = ip
+			} else {
+				hostname = "*"
+			}
+		}
+		if ip == "" {
+			ip = "N/A"
+		}
+
+		timeStr := "N/A"
+		if timedOut {
+			timeStr = "*"
+		}
+		if len(times) > 0 {
+			timeStr = strings.Join(times, ", ")
+		}
+
+		rows = append(rows, []string{hop, ip, hostname, timeStr})
+	}
+	return rows
+}
+
+func stripDelims(s string) string {
+	return strings.Trim(s, "()[]")
+}
+
+func isIPLike(s string) bool {
+	if s == "" {
+		return false
+	}
+	// IPv4
+	if strings.Count(s, ".") == 3 {
+		parts := strings.Split(s, ".")
+		if len(parts) == 4 {
+			ok := true
+			for _, p := range parts {
+				if p == "" {
+					ok = false
+					break
+				}
+				for _, r := range p {
+					if r < '0' || r > '9' {
+						ok = false
+						break
+					}
+				}
+				if !ok {
+					break
+				}
+			}
+			return ok
+		}
+	}
+	// IPv6 (best-effort)
+	if strings.Contains(s, ":") {
+		return true
+	}
+	return false
 }
 
 func truncateForDisplay(s string, max int) string {
