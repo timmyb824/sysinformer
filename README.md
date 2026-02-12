@@ -1,11 +1,12 @@
 # sysinformer
 
-A simple, portable system information CLI tool for macOS and Linux, written in Go.
+A simple, portable system and web information CLI tool for macOS and Linux, written in Go.
 
 ## Features
 
 - System information (OS, kernel, uptime, users, etc.)
 - CPU, memory, disk, network, latency, services, and container info
+- Website diagnostics (ping, HTTP, DNS, SSL, WHOIS, traceroute)
 - Easy-to-use command-line flags
 - No config file required
 
@@ -37,6 +38,8 @@ go install github.com/timmyb824/sysinformer@latest
 
 Run the CLI with the desired flags:
 
+System information:
+
 ```sh
 sysinformer --system     # Show system info
 sysinformer --cpu        # Show CPU info
@@ -50,6 +53,29 @@ sysinformer --all        # Show all info
 ```
 
 Short flags (e.g., `-s`, `-c`, etc.) are also supported.
+
+Website diagnostics:
+
+```sh
+sysinformer web example.com --full
+sysinformer web https://example.com --http --ssl
+sysinformer web example.com --dns
+sysinformer web example.com --ping --count 5
+sysinformer web example.com --timeout 15 --trace
+```
+
+The `web` command supports the following options:
+
+- `--ping`
+- `--latency`
+- `--dns`
+- `--http`
+- `--ssl`
+- `--whois`
+- `--trace`
+- `--full`
+- `--timeout` (seconds)
+- `--count` (ping count)
 
 ## License
 
