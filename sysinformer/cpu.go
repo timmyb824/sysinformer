@@ -78,24 +78,24 @@ func getCPUInfo() (map[string]interface{}, error) {
 	// Get process information
 	processes, err := process.Processes()
 	if err == nil {
-			// Create a slice to store process info
+		// Create a slice to store process info
 		var procs []procInfo
 
 		// Collect info for each process
 		for _, p := range processes {
 			name, err := p.Name()
 			if err != nil {
-			continue
+				continue
 			}
 
 			cpu, err := p.CPUPercent()
 			if err != nil {
-			continue
+				continue
 			}
 
 			mem, err := p.MemoryPercent()
 			if err != nil {
-			continue
+				continue
 			}
 
 			procs = append(procs, procInfo{
