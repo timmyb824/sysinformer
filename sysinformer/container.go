@@ -72,7 +72,7 @@ func getContainers() ([]Container, error) {
 			continue
 		}
 
-			// Parse ports
+		// Parse ports
 		ports := fields[6]
 		if ports == "" {
 			ports = "N/A"

@@ -46,14 +46,8 @@ func ValidateTarget(ctx context.Context, raw string) (normalizedURL string, doma
 	if u.Host == "" {
 		return "", "", fmt.Errorf("invalid url: %q", raw)
 	}
-	// Strip port if present
-	host := u.Host
-	if strings.Contains(host, ":") {
-		h, _, splitErr := net.SplitHostPort(host)
-		if splitErr == nil {
-			host = h
-		}
-	}
+	// Extract hostname without port (handles IPv4, IPv6, and hostnames)
+	host := u.Hostname()
 	if host == "" {
 		return "", "", fmt.Errorf("invalid host: %q", raw)
 	}
@@ -73,6 +67,7 @@ func RunWebDiagnostics(opts WebDiagOptions) error {
 		opts.Count = 4
 	}
 
+	// Create a context with timeout for DNS validation
 	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(opts.TimeoutSec)*time.Second)
 	defer cancel()
 
@@ -98,7 +93,7 @@ func RunWebDiagnostics(opts WebDiagOptions) error {
 	if opts.HTTP || runAll {
 		CheckHTTPStatusAndHeaders(nURL, time.Duration(opts.TimeoutSec)*time.Second)
 	}
-	if opts.SSL || (runAll && strings.HasPrefix(nURL, "https://")) {
+	if opts.SSL || runAll {
 		CheckSSL(domain, time.Duration(opts.TimeoutSec)*time.Second)
 	}
 	if opts.Whois || runAll {
@@ -125,9 +120,16 @@ func PingWebsite(domain string, count int, timeout time.Duration) {
 	defer cancel()
 	cmd := exec.CommandContext(ctx, "ping", pingParam, fmt.Sprintf("%d", count), domain)
 	out, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Printf("Ping failed: %v\n", err)
+	// If the context timed out or was canceled, report and return.
+	if ctx.Err() != nil {
+		fmt.Printf("Ping canceled or timed out: %v\n", ctx.Err())
 		return
+	}
+	// Some ping implementations return a non-zero exit code even when providing
+	// useful output (for example, when there is packet loss). In that case,
+	// continue parsing the output but still surface the error.
+	if err != nil {
+		fmt.Printf("Ping reported error (continuing to parse output): %v\n", err)
 	}
 	text := string(out)
 
@@ -400,6 +402,11 @@ func normalizeWhitespace(s string) string {
 func CheckWhois(domain string, timeout time.Duration) {
 	fmt.Println("")
 	PrintSectionHeader("WHOIS")
+
+	if _, err := exec.LookPath("whois"); err != nil {
+		fmt.Println("whois not found on PATH. Install it (e.g. 'brew install whois' on macOS, 'apt install whois' on Linux) or omit --whois.")
+		return
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()

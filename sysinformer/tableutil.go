@@ -9,7 +9,7 @@ import (
 	"golang.org/x/term"
 )
 
-// PrintSectionHeader prints a section heading in green for better visibility in CLI output
+// PrintSectionHeader prints a section heading in cyan with bold styling for better visibility in CLI output
 func PrintSectionHeader(header string) {
 	cyan := "\033[36m"
 	bold := "\033[1m"
@@ -30,18 +30,20 @@ func PrintPanel(title string, subtitle string) {
 	lines := strings.Split(content, "\n")
 	maxLen := 0
 	for _, l := range lines {
-		if len(l) > maxLen {
-			maxLen = len(l)
+		runeCount := len([]rune(l))
+		if runeCount > maxLen {
+			maxLen = runeCount
 		}
 	}
 
 	innerWidth := maxLen + 2
-	top := "┌" + strings.Repeat("─", innerWidth) + "┐"
-	bot := "└" + strings.Repeat("─", innerWidth) + "┘"
+	top := gray + "┌" + strings.Repeat("─", innerWidth) + "┐" + reset
+	bot := gray + "└" + strings.Repeat("─", innerWidth) + "┘" + reset
 
-	fmt.Println(gray + top + reset)
+	fmt.Println(top)
 	for i, l := range lines {
-		pad := innerWidth - (len(l) + 2)
+		runeCount := len([]rune(l))
+		pad := innerWidth - (runeCount + 2)
 		if pad < 0 {
 			pad = 0
 		}
@@ -49,9 +51,10 @@ func PrintPanel(title string, subtitle string) {
 		if i == 0 {
 			style = bold
 		}
-		fmt.Println(gray+"│"+reset, style+l+reset+strings.Repeat(" ", pad), gray+"│"+reset)
+		line := gray + "│ " + reset + style + l + reset + strings.Repeat(" ", pad) + " " + gray + "│" + reset
+		fmt.Println(line)
 	}
-	fmt.Println(gray + bot + reset)
+	fmt.Println(bot)
 }
 
 // RenderTable prints a formatted table with the given headers and rows

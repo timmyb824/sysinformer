@@ -36,16 +36,16 @@ func getSystemInfo() (map[string]interface{}, error) {
 	}
 
 	systemInfo := map[string]interface{}{
-		"os_type":      cases.Title(language.English).String(runtime.GOOS),
-		"hostname":     hostInfo.Hostname,
-		"kernel_info":  hostInfo.KernelVersion,
-		"architecture": runtime.GOARCH,
-		"dist":         dist,
-		"dist_version": hostInfo.PlatformVersion,
-		"uptime":       fmt.Sprintf("%d days, %d hours, %d minutes", hostInfo.Uptime/86400, (hostInfo.Uptime%86400)/3600, (hostInfo.Uptime%3600)/60),
+		"os_type":        cases.Title(language.English).String(runtime.GOOS),
+		"hostname":       hostInfo.Hostname,
+		"kernel_info":    hostInfo.KernelVersion,
+		"architecture":   runtime.GOARCH,
+		"dist":           dist,
+		"dist_version":   hostInfo.PlatformVersion,
+		"uptime":         fmt.Sprintf("%d days, %d hours, %d minutes", hostInfo.Uptime/86400, (hostInfo.Uptime%86400)/3600, (hostInfo.Uptime%3600)/60),
 		"last_boot_date": time.Unix(int64(hostInfo.BootTime), 0).Format("2006-01-02 15:04:05"),
-		"users_nb":     usersNb,
-		"current_date": time.Now().Format("2006-01-02 15:04:05"),
+		"users_nb":       usersNb,
+		"current_date":   time.Now().Format("2006-01-02 15:04:05"),
 	}
 	return systemInfo, nil
 }
