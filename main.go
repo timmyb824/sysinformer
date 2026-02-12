@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var Version = "v1.2.0"
+var Version = "v1.3.0"
 
 func main() {
 	app := &cli.App{
