@@ -30,7 +30,7 @@ type WebDiagOptions struct {
 	Count      int
 }
 
-func ValidateTarget(raw string) (normalizedURL string, domain string, err error) {
+func ValidateTarget(ctx context.Context, raw string) (normalizedURL string, domain string, err error) {
 	if raw == "" {
 		return "", "", errors.New("empty target")
 	}
@@ -53,7 +53,7 @@ func ValidateTarget(raw string) (normalizedURL string, domain string, err error)
 	}
 
 	// Resolve to ensure it exists
-	if _, err := net.DefaultResolver.LookupHost(context.Background(), host); err != nil {
+	if _, err := net.DefaultResolver.LookupHost(ctx, host); err != nil {
 		return "", "", err
 	}
 	return u.String(), host, nil
@@ -67,7 +67,11 @@ func RunWebDiagnostics(opts WebDiagOptions) error {
 		opts.Count = 4
 	}
 
-	nURL, domain, err := ValidateTarget(opts.Target)
+	// Create a context with timeout for DNS validation
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(opts.TimeoutSec)*time.Second)
+	defer cancel()
+
+	nURL, domain, err := ValidateTarget(ctx, opts.Target)
 	if err != nil {
 		return err
 	}
@@ -398,6 +402,11 @@ func normalizeWhitespace(s string) string {
 func CheckWhois(domain string, timeout time.Duration) {
 	fmt.Println("")
 	PrintSectionHeader("WHOIS")
+
+	if _, err := exec.LookPath("whois"); err != nil {
+		fmt.Println("whois not found on PATH. Install it (e.g. 'brew install whois' on macOS, 'apt install whois' on Linux) or omit --whois.")
+		return
+	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()

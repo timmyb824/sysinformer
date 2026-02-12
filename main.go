@@ -13,8 +13,8 @@ var Version = "v1.2.0"
 func main() {
 	app := &cli.App{
 		Version: Version,
-		Name:  "sysinformer",
-		Usage: "Show system info",
+		Name:    "sysinformer",
+		Usage:   "Show system info",
 		Commands: []*cli.Command{
 			{
 				Name:      "web",
