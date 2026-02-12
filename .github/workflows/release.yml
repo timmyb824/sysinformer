@@ -26,10 +26,18 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.22"
+      - name: Run tests
+        run: go test ./...
       - name: Build binary
         run: |
           VERSION=${GITHUB_REF##*/}
           GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} go build -ldflags "-X main.Version=$VERSION" -o sysinformer-${{ matrix.goos }}-${{ matrix.goarch }}
+      - name: Smoke test binary
+        if: ${{ matrix.goos == 'linux' && matrix.goarch == 'amd64' }}
+        run: |
+          chmod +x sysinformer-${{ matrix.goos }}-${{ matrix.goarch }}
+          ./sysinformer-${{ matrix.goos }}-${{ matrix.goarch }} --help >/dev/null
+          ./sysinformer-${{ matrix.goos }}-${{ matrix.goarch }} web --help >/dev/null
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
