@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	GET_WAN_IP = "https://api.ipify.org"
+	GET_WAN_IP      = "https://api.ipify.org"
 	NETWORK_TIMEOUT = 3 * time.Second
 )
 

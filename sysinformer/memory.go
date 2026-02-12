@@ -152,29 +152,29 @@ func getMemoryInfo() (map[string]interface{}, error) {
 		}
 
 		return map[string]interface{}{
-			"mem_total":               formatMemoryValue(memTotal),
-			"mem_free":                formatMemoryValue(memFree),
-			"mem_usage":               virtualMemory.UsedPercent,
-			"mem_used_percentage_calc": memUsedPercentageCalc,
-			"swap_total":              formatMemoryValue(swapTotal),
-			"swap_free":               formatMemoryValue(swapFree),
-			"swap_usage":              swapMemory.UsedPercent,
+			"mem_total":                 formatMemoryValue(memTotal),
+			"mem_free":                  formatMemoryValue(memFree),
+			"mem_usage":                 virtualMemory.UsedPercent,
+			"mem_used_percentage_calc":  memUsedPercentageCalc,
+			"swap_total":                formatMemoryValue(swapTotal),
+			"swap_free":                 formatMemoryValue(swapFree),
+			"swap_usage":                swapMemory.UsedPercent,
 			"swap_used_percentage_calc": swapUsedPercentageCalc,
-			"warning":                  warning,
-			"top_processes":            filteredProcs,
+			"warning":                   warning,
+			"top_processes":             filteredProcs,
 		}, nil
 	}
 
 	return map[string]interface{}{
-		"mem_total":               formatMemoryValue(memTotal),
-		"mem_free":                formatMemoryValue(memFree),
-		"mem_usage":               virtualMemory.UsedPercent,
-		"mem_used_percentage_calc": memUsedPercentageCalc,
-		"swap_total":              formatMemoryValue(swapTotal),
-		"swap_free":               formatMemoryValue(swapFree),
-		"swap_usage":              swapMemory.UsedPercent,
+		"mem_total":                 formatMemoryValue(memTotal),
+		"mem_free":                  formatMemoryValue(memFree),
+		"mem_usage":                 virtualMemory.UsedPercent,
+		"mem_used_percentage_calc":  memUsedPercentageCalc,
+		"swap_total":                formatMemoryValue(swapTotal),
+		"swap_free":                 formatMemoryValue(swapFree),
+		"swap_usage":                swapMemory.UsedPercent,
 		"swap_used_percentage_calc": swapUsedPercentageCalc,
-		"warning":                  warning,
+		"warning":                   warning,
 	}, nil
 }
 
@@ -189,13 +189,13 @@ func PrintMemoryInfo() {
 	}
 
 	PrintSectionHeader("===== Memory Information =====")
-fmt.Println("Note: 'Actual Usage %' is calculated as (1 - Available/Total) and matches htop-style memory usage (excludes cache/buffers reclaimed by the OS).")
+	fmt.Println("Note: 'Actual Usage %' is calculated as (1 - Available/Total) and matches htop-style memory usage (excludes cache/buffers reclaimed by the OS).")
 	headers := []string{"Type", "Free", "Total", "Usage %", "Actual Usage %"}
 	memRow := []string{
 		"Mem",
 		memInfo["mem_free"].(string),
 		memInfo["mem_total"].(string),
-		fmt.Sprintf("%.2f", memInfo["mem_usage"].(float64)), // Traditional usage (includes buffers/cache)
+		fmt.Sprintf("%.2f", memInfo["mem_usage"].(float64)),                // Traditional usage (includes buffers/cache)
 		fmt.Sprintf("%.2f", memInfo["mem_used_percentage_calc"].(float64)), // htop-style usage (Available)
 	}
 	swapRow := []string{
